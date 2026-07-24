@@ -480,8 +480,19 @@ button {
 }
 
 .modal__body {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 22px 24px;
+}
+
+.modal__titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  /* leave room for the absolutely-positioned close button */
+  padding-right: 34px;
 }
 
 /* Edge-anchored action buttons straddling the modal border (N8N-style). */
@@ -557,27 +568,18 @@ button {
   color: #1a1a1d;
 }
 
-.name-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.name-row .input {
-  flex: 1 1 auto;
-}
-
 .type-select {
   width: auto;
+  min-width: 0;
   flex: 0 0 auto;
-  min-width: 130px;
   font-weight: 600;
+  padding-right: 30px;
 }
 
 .modal__title {
   font-size: 18px;
   font-weight: 700;
-  margin: 0 0 18px;
+  margin: 0;
 }
 
 .modal__close {

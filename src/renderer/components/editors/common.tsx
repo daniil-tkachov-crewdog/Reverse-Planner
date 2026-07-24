@@ -6,6 +6,7 @@ export function Modal({
   title,
   onClose,
   children,
+  titleAside,
   edgeTop,
   edgeLeft,
   edgeRight,
@@ -14,6 +15,7 @@ export function Modal({
   title: string
   onClose: () => void
   children: ReactNode
+  titleAside?: ReactNode
   edgeTop?: ReactNode
   edgeLeft?: ReactNode
   edgeRight?: ReactNode
@@ -30,7 +32,10 @@ export function Modal({
         {edgeRight && <div className="modal-edge modal-edge--right">{edgeRight}</div>}
         {edgeBottom && <div className="modal-edge modal-edge--bottom">{edgeBottom}</div>}
         <div className="modal__body">
-          <h2 className="modal__title">{title}</h2>
+          <div className="modal__titlebar">
+            <h2 className="modal__title">{title}</h2>
+            {titleAside}
+          </div>
           {children}
         </div>
       </div>

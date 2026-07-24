@@ -3,8 +3,10 @@ import type { Connection } from '@xyflow/react'
 import { applyNodeChanges, type NodeChange } from '@xyflow/react'
 import type { GraphNode, NodeData, Plan, SaveAllResult, StateNodeData } from '../../shared/types'
 import {
+  addActionAfter,
   addActionBefore,
   addSideFlow,
+  addStateAfter,
   addStateBefore,
   connectNodes,
   makeStateNode,
@@ -43,6 +45,8 @@ interface PlanState {
   patchNode: (id: string, patch: Record<string, unknown>) => void
   addState: (fromId: string) => void
   addAction: (fromId: string) => void
+  addStateAfter: (fromId: string) => void
+  addActionAfter: (fromId: string) => void
   addSideFlow: (fromId: string, dir: 'top' | 'bottom') => void
   deleteNode: (id: string) => void
 
@@ -213,6 +217,22 @@ export const usePlanStore = create<PlanState>((set, get) => {
       const graph = asGraph()
       if (!graph) return
       const { graph: next, newNodeId } = addActionBefore(graph, fromId)
+      commit(next)
+      set({ editingNodeId: newNodeId })
+    },
+
+    addStateAfter: (fromId) => {
+      const graph = asGraph()
+      if (!graph) return
+      const { graph: next, newNodeId } = addStateAfter(graph, fromId)
+      commit(next)
+      set({ editingNodeId: newNodeId })
+    },
+
+    addActionAfter: (fromId) => {
+      const graph = asGraph()
+      if (!graph) return
+      const { graph: next, newNodeId } = addActionAfter(graph, fromId)
       commit(next)
       set({ editingNodeId: newNodeId })
     },

@@ -7,6 +7,9 @@ export function ActionEditorModal({ node }: { node: GraphNode }): JSX.Element {
   const d = node.data as ActionNodeData
   const patchNode = usePlanStore((s) => s.patchNode)
   const addState = usePlanStore((s) => s.addState)
+  const addAction = usePlanStore((s) => s.addAction)
+  const addStateAfter = usePlanStore((s) => s.addStateAfter)
+  const addActionAfter = usePlanStore((s) => s.addActionAfter)
   const deleteNode = usePlanStore((s) => s.deleteNode)
   const setEditingNode = usePlanStore((s) => s.setEditingNode)
 
@@ -25,14 +28,41 @@ export function ActionEditorModal({ node }: { node: GraphNode }): JSX.Element {
     <Modal
       title="Edit Action"
       onClose={() => setEditingNode(null)}
+      edgeLeft={
+        <>
+          <button
+            className="modal-edge-btn modal-edge-btn--primary"
+            title="Add State (before)"
+            onClick={() => addState(node.id)}
+          >
+            S
+          </button>
+          <button
+            className="modal-edge-btn"
+            title="Add Action (before)"
+            onClick={() => addAction(node.id)}
+          >
+            A
+          </button>
+        </>
+      }
       edgeRight={
-        <button
-          className="modal-edge-btn modal-edge-btn--primary"
-          title="Add State"
-          onClick={() => addState(node.id)}
-        >
-          S
-        </button>
+        <>
+          <button
+            className="modal-edge-btn modal-edge-btn--primary"
+            title="Add State (after)"
+            onClick={() => addStateAfter(node.id)}
+          >
+            S
+          </button>
+          <button
+            className="modal-edge-btn"
+            title="Add Action (after)"
+            onClick={() => addActionAfter(node.id)}
+          >
+            A
+          </button>
+        </>
       }
     >
       <Field label="Name">

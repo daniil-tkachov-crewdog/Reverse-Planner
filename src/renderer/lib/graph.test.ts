@@ -3,11 +3,13 @@ import {
   __resetIdCounter,
   addActionBefore,
   addSideFlow,
+  addStateAfter,
   addStateBefore,
   centerX,
   connectNodes,
   incomingEdge,
   makeStateNode,
+  outgoingEdge,
   removeNode,
   updateNodeData,
   type Graph
@@ -63,6 +65,23 @@ describe('addStateBefore', () => {
     const bx = centerX(graph.nodes.find((n) => n.id === bId)!)
     const { graph: next, newNodeId } = addStateBefore(graph, bId)
     expect(centerX(next.nodes.find((n) => n.id === newNodeId)!)).toBeLessThan(bx)
+  })
+})
+
+describe('addStateAfter', () => {
+  it('inserts a state to the right and rewires the spine', () => {
+    const { graph, aId, bId } = endpointGraph()
+    const { graph: next, newNodeId } = addStateAfter(graph, aId)
+    // A -> newState -> B
+    expect(outgoingEdge(next, aId)?.target).toBe(newNodeId)
+    expect(incomingEdge(next, bId)?.source).toBe(newNodeId)
+  })
+
+  it('places the new node to the right of the reference', () => {
+    const { graph, aId } = endpointGraph()
+    const ax = centerX(graph.nodes.find((n) => n.id === aId)!)
+    const { graph: next, newNodeId } = addStateAfter(graph, aId)
+    expect(centerX(next.nodes.find((n) => n.id === newNodeId)!)).toBeGreaterThan(ax)
   })
 })
 

@@ -73,6 +73,11 @@ export function incomingEdge(graph: Graph, nodeId: string): GraphEdge | undefine
   return graph.edges.find((e) => e.target === nodeId)
 }
 
+/** The edge leaving a node (source === nodeId). At most one on the spine. */
+export function outgoingEdge(graph: Graph, nodeId: string): GraphEdge | undefined {
+  return graph.edges.find((e) => e.source === nodeId)
+}
+
 export function makeStateNode(
   cx: number,
   cy: number,
@@ -158,6 +163,43 @@ export function insertBefore(
   return { graph: next, newNodeId: placed.id }
 }
 
+/**
+ * Insert `newNode` immediately to the RIGHT of `refId`, splicing into refId's
+ * outgoing edge: an existing `ref -> R` becomes `ref -> newNode -> R`; with no
+ * outgoing edge it simply appends `ref -> newNode`. Nodes right of ref are
+ * shifted to make room. Mirror of insertBefore.
+ */
+export function insertAfter(
+  graph: Graph,
+  refId: string,
+  newNode: GraphNode
+): { graph: Graph; newNodeId: string } {
+  const ref = getNode(graph, refId)
+  if (!ref) return { graph, newNodeId: newNode.id }
+
+  const refCx = centerX(ref)
+  const laneCy = centerY(ref)
+
+  // Shift everything strictly right of ref to open a slot.
+  const shifted = graph.nodes.map((n) =>
+    centerX(n) > refCx ? setCenter(n, centerX(n) + COL, centerY(n)) : n
+  )
+  const placed = setCenter(newNode, refCx + COL, laneCy)
+
+  const outgoing = outgoingEdge(graph, refId)
+  let edges: GraphEdge[]
+  if (outgoing) {
+    // ref -> R  becomes  newNode -> R, plus ref -> newNode
+    edges = graph.edges.map((e) => (e.id === outgoing.id ? { ...e, source: placed.id } : e))
+    edges.push(makeEdge(refId, placed.id))
+  } else {
+    edges = [...graph.edges, makeEdge(refId, placed.id)]
+  }
+
+  const next = recolorEdges({ nodes: [...shifted, placed], edges })
+  return { graph: next, newNodeId: placed.id }
+}
+
 /** Add a new State to the left of the given node (State or Action). */
 export function addStateBefore(
   graph: Graph,
@@ -178,6 +220,28 @@ export function addActionBefore(
   const ref = getNode(graph, refId)
   const cy = ref ? centerY(ref) : 0
   return insertBefore(graph, refId, makeActionNode(0, cy, data))
+}
+
+/** Add a new State to the right of the given node (forward direction). */
+export function addStateAfter(
+  graph: Graph,
+  refId: string,
+  data?: Partial<StateNodeData>
+): { graph: Graph; newNodeId: string } {
+  const ref = getNode(graph, refId)
+  const cy = ref ? centerY(ref) : 0
+  return insertAfter(graph, refId, makeStateNode(0, cy, data))
+}
+
+/** Add a new Action to the right of the given node (forward direction). */
+export function addActionAfter(
+  graph: Graph,
+  refId: string,
+  data?: Partial<ActionNodeData>
+): { graph: Graph; newNodeId: string } {
+  const ref = getNode(graph, refId)
+  const cy = ref ? centerY(ref) : 0
+  return insertAfter(graph, refId, makeActionNode(0, cy, data))
 }
 
 /**
