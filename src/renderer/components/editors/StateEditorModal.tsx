@@ -17,14 +17,30 @@ export function StateEditorModal({ node }: { node: GraphNode }): JSX.Element {
     : 'Edit State'
 
   return (
-    <Modal title={title} onClose={() => setEditingNode(null)}>
-      {/* Top side-flow button */}
-      <div className="modal-actions__row">
+    <Modal
+      title={title}
+      onClose={() => setEditingNode(null)}
+      edgeTop={
         <button className="btn btn--ghost" onClick={() => addSideFlow(node.id, 'top')}>
           ↑ Add Side Flow (above)
         </button>
-      </div>
-
+      }
+      edgeBottom={
+        <button className="btn btn--ghost" onClick={() => addSideFlow(node.id, 'bottom')}>
+          ↓ Add Side Flow (below)
+        </button>
+      }
+      edgeRight={
+        <>
+          <button className="btn btn--primary" onClick={() => addState(node.id)}>
+            + Add State
+          </button>
+          <button className="btn" onClick={() => addAction(node.id)}>
+            + Add Action
+          </button>
+        </>
+      }
+    >
       <Field label="Name">
         <input
           className="input"
@@ -46,34 +62,17 @@ export function StateEditorModal({ node }: { node: GraphNode }): JSX.Element {
         />
       </Field>
 
-      <div className="modal-actions">
-        <div className="modal-actions__main">
-          <div className="modal-actions__left">
-            <button className="btn btn--primary" onClick={() => addState(node.id)}>
-              + Add State
-            </button>
-            <button className="btn" onClick={() => addAction(node.id)}>
-              + Add Action
-            </button>
-          </div>
-          {!d.isEndpoint && (
-            <button
-              className="btn btn--ghost"
-              style={{ color: 'var(--red)', borderColor: 'var(--red)' }}
-              onClick={() => deleteNode(node.id)}
-            >
-              Delete
-            </button>
-          )}
+      {!d.isEndpoint && (
+        <div className="modal-actions">
+          <button
+            className="btn btn--ghost"
+            style={{ color: 'var(--red)', borderColor: 'var(--red)' }}
+            onClick={() => deleteNode(node.id)}
+          >
+            Delete
+          </button>
         </div>
-      </div>
-
-      {/* Bottom side-flow button */}
-      <div className="modal-actions__row">
-        <button className="btn btn--ghost" onClick={() => addSideFlow(node.id, 'bottom')}>
-          ↓ Add Side Flow (below)
-        </button>
-      </div>
+      )}
     </Modal>
   )
 }

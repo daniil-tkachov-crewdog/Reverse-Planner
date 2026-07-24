@@ -22,7 +22,15 @@ export function ActionEditorModal({ node }: { node: GraphNode }): JSX.Element {
     patchNode(node.id, { actions: actions.filter((_, idx) => idx !== i) })
 
   return (
-    <Modal title="Edit Action" onClose={() => setEditingNode(null)}>
+    <Modal
+      title="Edit Action"
+      onClose={() => setEditingNode(null)}
+      edgeRight={
+        <button className="btn btn--primary" onClick={() => addState(node.id)}>
+          + Add State
+        </button>
+      }
+    >
       <Field label="Name">
         <input
           className="input"
@@ -83,20 +91,13 @@ export function ActionEditorModal({ node }: { node: GraphNode }): JSX.Element {
       </div>
 
       <div className="modal-actions">
-        <div className="modal-actions__main">
-          <div className="modal-actions__left">
-            <button className="btn btn--primary" onClick={() => addState(node.id)}>
-              + Add State
-            </button>
-          </div>
-          <button
-            className="btn btn--ghost"
-            style={{ color: 'var(--red)', borderColor: 'var(--red)' }}
-            onClick={() => deleteNode(node.id)}
-          >
-            Delete
-          </button>
-        </div>
+        <button
+          className="btn btn--ghost"
+          style={{ color: 'var(--red)', borderColor: 'var(--red)' }}
+          onClick={() => deleteNode(node.id)}
+        >
+          Delete
+        </button>
       </div>
     </Modal>
   )

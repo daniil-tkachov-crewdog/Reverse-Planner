@@ -2,14 +2,12 @@ import { useMemo } from 'react'
 import {
   Background,
   BackgroundVariant,
-  Controls,
   MarkerType,
   ReactFlow,
   type Edge,
   type Node
 } from '@xyflow/react'
 import { usePlanStore } from '../store/planStore'
-import { hasEndpoint } from '../lib/plan'
 import { StateNodeView } from '../components/canvas/StateNodeView'
 import { ActionNodeView } from '../components/canvas/ActionNodeView'
 import { GREY } from '../lib/graph'
@@ -42,7 +40,8 @@ export function Editor(): JSX.Element {
 
   if (!current) return <div className="editor" />
 
-  const bothDefined = hasEndpoint(current, 'A') && hasEndpoint(current, 'B')
+  // Once the plan has any node, the endpoint scaffolding is dismissed for good.
+  const isEmpty = current.nodes.length === 0
 
   return (
     <div className="editor">
@@ -61,27 +60,18 @@ export function Editor(): JSX.Element {
           proOptions={{ hideAttribution: true }}
         >
           <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="#3a3a41" />
-          <Controls showInteractive={false} />
         </ReactFlow>
       </div>
 
-      {!bothDefined && (
+      {isEmpty && (
         <div className="editor-empty">
           <div className="editor-empty__inner">
-            <button
-              className="endpoint-btn"
-              disabled={hasEndpoint(current, 'A')}
-              onClick={() => defineEndpoint('A')}
-            >
-              {hasEndpoint(current, 'A') ? 'Point A defined' : 'Define point A'}
+            <button className="endpoint-btn" onClick={() => defineEndpoint('A')}>
+              Define point A
             </button>
             <div className="endpoint-arrow" />
-            <button
-              className="endpoint-btn"
-              disabled={hasEndpoint(current, 'B')}
-              onClick={() => defineEndpoint('B')}
-            >
-              {hasEndpoint(current, 'B') ? 'Point B defined' : 'Define point B'}
+            <button className="endpoint-btn" onClick={() => defineEndpoint('B')}>
+              Define point B
             </button>
           </div>
         </div>

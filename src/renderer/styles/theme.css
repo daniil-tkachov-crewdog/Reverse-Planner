@@ -81,6 +81,32 @@ button {
   gap: 10px;
 }
 
+.plan-name-input {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px 9px;
+  min-width: 120px;
+  max-width: 340px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.plan-name-input:hover {
+  border-color: var(--border);
+}
+
+.plan-name-input:focus {
+  outline: none;
+  background: var(--bg);
+  border-color: var(--accent);
+}
+
 .icon-btn {
   display: inline-flex;
   align-items: center;
@@ -445,12 +471,45 @@ button {
   width: 100%;
   max-width: 620px;
   max-height: 90vh;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow);
+}
+
+.modal__body {
+  overflow: auto;
   padding: 22px 24px;
+}
+
+/* Edge-anchored action buttons straddling the modal border (N8N-style). */
+.modal-edge {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  gap: 10px;
+}
+
+.modal-edge--top {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-edge--bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.modal-edge--right {
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .modal__title {
@@ -604,32 +663,11 @@ button {
   margin-left: 8px;
 }
 
-/* modal action buttons layout: side-flow top/bottom + left column */
+/* modal footer: delete action, right-aligned */
 .modal-actions {
+  display: flex;
+  justify-content: flex-end;
   margin-top: 20px;
-}
-
-.modal-actions__row {
-  display: flex;
-  justify-content: center;
-  margin: 10px 0;
-}
-
-.modal-actions__main {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.modal-actions__left {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.modal-actions__save {
-  align-self: flex-end;
 }
 
 .settings {

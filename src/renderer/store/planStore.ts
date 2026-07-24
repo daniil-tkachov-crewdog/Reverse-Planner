@@ -21,6 +21,7 @@ type SaveAllState = 'idle' | 'loading' | 'done'
 
 interface PlanState {
   view: View
+  prevView: View
   plans: Plan[]
   current: Plan | null
   editingNodeId: string | null
@@ -29,6 +30,7 @@ interface PlanState {
   init: () => Promise<void>
   goDashboard: () => Promise<void>
   goSettings: () => void
+  goBack: () => void
 
   createPlan: () => Promise<void>
   openPlan: (id: string) => Promise<void>
@@ -102,6 +104,7 @@ export const usePlanStore = create<PlanState>((set, get) => {
 
   return {
     view: 'dashboard',
+    prevView: 'dashboard',
     plans: [],
     current: null,
     editingNodeId: null,
@@ -117,7 +120,9 @@ export const usePlanStore = create<PlanState>((set, get) => {
       set({ view: 'dashboard', current: null, editingNodeId: null, plans })
     },
 
-    goSettings: () => set({ view: 'settings' }),
+    goSettings: () => set({ prevView: get().view, view: 'settings' }),
+
+    goBack: () => set({ view: get().prevView }),
 
     createPlan: async () => {
       const plan = createEmptyPlan('Untitled Plan')

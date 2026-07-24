@@ -5,11 +5,17 @@ import { STATUS_COLOR, STATUS_LABEL, STATUS_ORDER } from '../../../shared/types'
 export function Modal({
   title,
   onClose,
-  children
+  children,
+  edgeTop,
+  edgeRight,
+  edgeBottom
 }: {
   title: string
   onClose: () => void
   children: ReactNode
+  edgeTop?: ReactNode
+  edgeRight?: ReactNode
+  edgeBottom?: ReactNode
 }): JSX.Element {
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -17,8 +23,13 @@ export function Modal({
         <button className="modal__close" onClick={onClose} aria-label="Close">
           ✕
         </button>
-        <h2 className="modal__title">{title}</h2>
-        {children}
+        {edgeTop && <div className="modal-edge modal-edge--top">{edgeTop}</div>}
+        {edgeRight && <div className="modal-edge modal-edge--right">{edgeRight}</div>}
+        {edgeBottom && <div className="modal-edge modal-edge--bottom">{edgeBottom}</div>}
+        <div className="modal__body">
+          <h2 className="modal__title">{title}</h2>
+          {children}
+        </div>
       </div>
     </div>
   )
