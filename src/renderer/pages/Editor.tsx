@@ -66,12 +66,8 @@ export function Editor(): JSX.Element {
       {isEmpty && (
         <div className="editor-empty">
           <div className="editor-empty__inner">
-            <button className="endpoint-btn" onClick={() => defineEndpoint('A')}>
-              Define point A
-            </button>
-            <div className="endpoint-arrow" />
             <button className="endpoint-btn" onClick={() => defineEndpoint('B')}>
-              Define point B
+              Create Point B
             </button>
           </div>
         </div>

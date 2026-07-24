@@ -26,8 +26,12 @@ export function ActionEditorModal({ node }: { node: GraphNode }): JSX.Element {
       title="Edit Action"
       onClose={() => setEditingNode(null)}
       edgeRight={
-        <button className="btn btn--primary" onClick={() => addState(node.id)}>
-          + Add State
+        <button
+          className="modal-edge-btn modal-edge-btn--primary"
+          title="Add State"
+          onClick={() => addState(node.id)}
+        >
+          S
         </button>
       }
     >

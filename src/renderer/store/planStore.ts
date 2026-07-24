@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Connection } from '@xyflow/react'
 import { applyNodeChanges, type NodeChange } from '@xyflow/react'
-import type { GraphNode, Plan, SaveAllResult } from '../../shared/types'
+import type { GraphNode, NodeData, Plan, SaveAllResult, StateNodeData } from '../../shared/types'
 import {
   addActionBefore,
   addSideFlow,
@@ -38,6 +38,7 @@ interface PlanState {
   renamePlan: (name: string) => void
 
   defineEndpoint: (which: 'A' | 'B') => void
+  setStateType: (id: string, type: 'A' | 'B' | 'step') => void
   setEditingNode: (id: string | null) => void
   patchNode: (id: string, patch: Record<string, unknown>) => void
   addState: (fromId: string) => void
@@ -175,6 +176,21 @@ export const usePlanStore = create<PlanState>((set, get) => {
       }
       commit({ nodes: nextNodes, edges: nextEdges })
       set({ editingNodeId: node.id })
+    },
+
+    setStateType: (id, type) => {
+      const graph = asGraph()
+      if (!graph) return
+      const isEndpoint = type === 'step' ? undefined : type
+      const nodes = graph.nodes.map((n) => {
+        if (n.id === id) return { ...n, data: { ...n.data, isEndpoint } as NodeData }
+        // Endpoints are unique: clear the same flag from whatever node held it.
+        if (isEndpoint && (n.data as StateNodeData).isEndpoint === isEndpoint) {
+          return { ...n, data: { ...n.data, isEndpoint: undefined } as NodeData }
+        }
+        return n
+      })
+      commit({ nodes, edges: graph.edges })
     },
 
     setEditingNode: (id) => set({ editingNodeId: id }),

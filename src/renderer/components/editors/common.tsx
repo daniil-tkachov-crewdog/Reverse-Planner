@@ -7,6 +7,7 @@ export function Modal({
   onClose,
   children,
   edgeTop,
+  edgeLeft,
   edgeRight,
   edgeBottom
 }: {
@@ -14,6 +15,7 @@ export function Modal({
   onClose: () => void
   children: ReactNode
   edgeTop?: ReactNode
+  edgeLeft?: ReactNode
   edgeRight?: ReactNode
   edgeBottom?: ReactNode
 }): JSX.Element {
@@ -24,6 +26,7 @@ export function Modal({
           ✕
         </button>
         {edgeTop && <div className="modal-edge modal-edge--top">{edgeTop}</div>}
+        {edgeLeft && <div className="modal-edge modal-edge--left">{edgeLeft}</div>}
         {edgeRight && <div className="modal-edge modal-edge--right">{edgeRight}</div>}
         {edgeBottom && <div className="modal-edge modal-edge--bottom">{edgeBottom}</div>}
         <div className="modal__body">
