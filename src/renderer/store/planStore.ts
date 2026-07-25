@@ -72,6 +72,8 @@ function serialize(plan: Plan): Plan {
       id: e.id,
       source: e.source,
       target: e.target,
+      sourceHandle: e.sourceHandle,
+      targetHandle: e.targetHandle,
       type: e.type,
       data: e.data
     }))

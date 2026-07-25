@@ -120,8 +120,31 @@ export function recolorEdges(graph: Graph): Graph {
   return { ...graph, edges }
 }
 
-function makeEdge(source: string, target: string): GraphEdge {
-  return { id: genId('edge'), source, target, type: 'statusEdge', data: { color: GREY } }
+/** Handle ids used on every node (see StateNodeView / ActionNodeView). */
+export const H = {
+  targetLeft: 't-left',
+  sourceRight: 's-right',
+  targetTop: 't-top',
+  sourceTop: 's-top',
+  targetBottom: 't-bottom',
+  sourceBottom: 's-bottom'
+} as const
+
+function makeEdge(
+  source: string,
+  target: string,
+  sourceHandle: string = H.sourceRight,
+  targetHandle: string = H.targetLeft
+): GraphEdge {
+  return {
+    id: genId('edge'),
+    source,
+    target,
+    sourceHandle,
+    targetHandle,
+    type: 'statusEdge',
+    data: { color: GREY }
+  }
 }
 
 /**
@@ -272,7 +295,13 @@ export function addSideFlow(
 
   laneCounter += 1
   const side = makeStateNode(refCx, cy, { ...data, lane: laneCounter })
-  const edges = [...graph.edges, makeEdge(side.id, refId)]
+  // Attach the side flow to the reference node's top (for an above fork) or
+  // bottom (below fork); arrow points from the side node into that edge.
+  const sideEdge =
+    direction === 'top'
+      ? makeEdge(side.id, refId, H.sourceBottom, H.targetTop)
+      : makeEdge(side.id, refId, H.sourceTop, H.targetBottom)
+  const edges = [...graph.edges, sideEdge]
   const next = recolorEdges({ nodes: [...graph.nodes, side], edges })
   return { graph: next, newNodeId: side.id }
 }

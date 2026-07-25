@@ -56,6 +56,9 @@ export interface GraphEdge {
   source: string
   target: string
   type?: string
+  /** Named handles so side-flow arrows can attach to a node's top/bottom. */
+  sourceHandle?: string
+  targetHandle?: string
   /** id of the Action node whose status colors this edge, if any. */
   actionId?: string
   [key: string]: unknown

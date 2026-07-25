@@ -10,8 +10,9 @@ import {
 import { usePlanStore } from '../store/planStore'
 import { StateNodeView } from '../components/canvas/StateNodeView'
 import { ActionNodeView } from '../components/canvas/ActionNodeView'
-import { GREY } from '../lib/graph'
+import { GREY, H } from '../lib/graph'
 import { EditorModals } from '../components/editors/EditorModals'
+import type { StateNodeData } from '../../shared/types'
 
 const nodeTypes = { stateNode: StateNodeView, actionNode: ActionNodeView }
 
@@ -22,7 +23,16 @@ export function Editor(): JSX.Element {
   const setEditingNode = usePlanStore((s) => s.setEditingNode)
   const defineEndpoint = usePlanStore((s) => s.defineEndpoint)
 
-  const nodes = (current?.nodes ?? []) as unknown as Node[]
+  // A node with no outgoing arrow is a dead end; Point B (the goal) is exempt.
+  // Such nodes surface a draggable connector so they can be wired onward.
+  const nodes = useMemo<Node[]>(() => {
+    const withOutgoing = new Set((current?.edges ?? []).map((e) => e.source))
+    return (current?.nodes ?? []).map((n) => {
+      const isB = (n.data as StateNodeData).isEndpoint === 'B'
+      const dangling = !withOutgoing.has(n.id) && !isB
+      return { ...n, data: { ...n.data, _dangling: dangling } }
+    }) as unknown as Node[]
+  }, [current?.nodes, current?.edges])
 
   const edges = useMemo<Edge[]>(() => {
     return (current?.edges ?? []).map((e) => {
@@ -31,6 +41,8 @@ export function Editor(): JSX.Element {
         id: e.id,
         source: e.source,
         target: e.target,
+        sourceHandle: e.sourceHandle ?? H.sourceRight,
+        targetHandle: e.targetHandle ?? H.targetLeft,
         type: 'smoothstep',
         style: { stroke: color, strokeWidth: 2.5 },
         markerEnd: { type: MarkerType.ArrowClosed, color, width: 16, height: 16 }

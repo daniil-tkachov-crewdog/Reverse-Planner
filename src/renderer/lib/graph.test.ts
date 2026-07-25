@@ -101,6 +101,19 @@ describe('addSideFlow', () => {
     const side = next.nodes.find((n) => n.id === newNodeId)!
     expect(side.position.y).toBeGreaterThan(0)
   })
+
+  it('wires an above fork into the reference top, a below fork into its bottom', () => {
+    const { graph, bId } = endpointGraph()
+    const top = addSideFlow(graph, bId, 'top')
+    const topEdge = top.graph.edges.find((e) => e.source === top.newNodeId)!
+    expect(topEdge.sourceHandle).toBe('s-bottom')
+    expect(topEdge.targetHandle).toBe('t-top')
+
+    const bottom = addSideFlow(graph, bId, 'bottom')
+    const bottomEdge = bottom.graph.edges.find((e) => e.source === bottom.newNodeId)!
+    expect(bottomEdge.sourceHandle).toBe('s-top')
+    expect(bottomEdge.targetHandle).toBe('t-bottom')
+  })
 })
 
 describe('removeNode', () => {
